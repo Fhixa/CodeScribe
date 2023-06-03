@@ -1,9 +1,39 @@
 import argparse
 import os.path
 import sys
-import openai as openai
+import pkg_resources
+import subprocess
 import tiktoken
+import openai as openai
 from config import API_KEY
+
+# List of required packages
+required_packages = [
+    'openai',
+    'tiktoken',
+]
+
+
+# Function to check if a package is already installed
+def package_is_installed(package):
+    return package in {pkg.key for pkg in pkg_resources.working_set}
+
+
+# Function to install required packages using pip
+def install_packages():
+    for package in required_packages:
+        if not package_is_installed(package):
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+            except subprocess.CalledProcessError:
+                return False
+    return True
+
+
+# Install required packages
+if not install_packages():
+    print("Failed to install required packages. Please make sure you have pip installed.")
+    sys.exit(1)
 
 parser = argparse.ArgumentParser(description="CodeScribe - An Automate way to describe code")
 
@@ -69,15 +99,24 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
 token_count = num_tokens_from_string(code, "cl100k_base")
 print(f"Number of token: {token_count}")
 
-openai.api_key = API_KEY
+response = ""
 
-response = openai.Completion.create(
-    model="text-davinci-003",
-    prompt=prompt,
-    temperature=0,
-    max_tokens=2048,
+# if token_count <= 2048:
+#     openai.api_key = API_KEY
+#     response = openai.Completion.create(
+#         model="text-davinci-003",
+#         prompt=prompt,
+#         temperature=0,
+#         max_tokens=2048,
+#
+#     )
+# else:
+#     print(f"Sry text limit is 2048 at once")
 
-)
+# print("\nGenerated comments:")
+# code_scribe_response = response.choices[0].text
+# print(code_scribe_response)
 
-print("\nGenerated comments:")
-print(response.choices[0].text)
+# Create the "CodeScribe Files" directory
+output_dir = os.path.join(os.getcwd(), "CodeScribe Files")
+os.makedirs(output_dir, exist_ok=True)
