@@ -1,2 +1,2 @@
 # CodeScribe
-CodeScribe - A Automate way to describe code
+CodeScribe - An Automate way to describe code
