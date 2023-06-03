@@ -1,6 +1,7 @@
 import argparse
 import os.path
 import sys
+from config import API_KEY
 
 parser = argparse.ArgumentParser(description="CodeScribe - An Automate way to describe code")
 
@@ -50,3 +51,4 @@ code = code_files[file_name]
 
 print(f"\nCode for file {file_name}:\n")
 print(code)
+
