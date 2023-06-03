@@ -1,6 +1,8 @@
 import argparse
 import os.path
 import sys
+import openai as openai
+import tiktoken
 from config import API_KEY
 
 parser = argparse.ArgumentParser(description="CodeScribe - An Automate way to describe code")
@@ -25,10 +27,8 @@ if not os.path.isdir(args.code_folder):
     print(f"Invalid code folder path: {args.code_folder}")
     exit(1)
 
-
 file_list = os.listdir(args.code_folder)
 code_files = {}
-
 
 print("Files in the code folder:")
 
@@ -52,3 +52,32 @@ code = code_files[file_name]
 print(f"\nCode for file {file_name}:\n")
 print(code)
 
+prompt = f"{code}" \
+         f"\n\n\n\n" \
+         f"generate beginner-friendly, professional multiline comments to accompany the code without making any " \
+         f"changes to the code itself. And add it to the code where it's needed to be add. And yeah must include " \
+         f"import section in the response"
+
+
+def num_tokens_from_string(string: str, encoding_name: str) -> int:
+    """Returns the number of tokens in a text string."""
+    encoding = tiktoken.get_encoding(encoding_name)
+    num_tokens = len(encoding.encode(string))
+    return num_tokens
+
+
+token_count = num_tokens_from_string(code, "cl100k_base")
+print(f"Number of token: {token_count}")
+
+openai.api_key = API_KEY
+
+response = openai.Completion.create(
+    model="text-davinci-003",
+    prompt=prompt,
+    temperature=0,
+    max_tokens=2048,
+
+)
+
+print("\nGenerated comments:")
+print(response.choices[0].text)
