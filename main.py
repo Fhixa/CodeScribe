@@ -99,24 +99,31 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
 token_count = num_tokens_from_string(code, "cl100k_base")
 print(f"Number of token: {token_count}")
 
-response = ""
+response = "Anon"
 
-# if token_count <= 2048:
-#     openai.api_key = API_KEY
-#     response = openai.Completion.create(
-#         model="text-davinci-003",
-#         prompt=prompt,
-#         temperature=0,
-#         max_tokens=2048,
-#
-#     )
-# else:
-#     print(f"Sry text limit is 2048 at once")
+if token_count <= 2048:
+    openai.api_key = API_KEY
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=prompt,
+        temperature=0,
+        max_tokens=2048,
 
-# print("\nGenerated comments:")
-# code_scribe_response = response.choices[0].text
-# print(code_scribe_response)
+    )
+else:
+    print(f"Sry text limit is 2048 at once")
+
+print("\nGenerated comments:")
+code_scribe_response = response.choices[0].text
+print(code_scribe_response)
 
 # Create the "CodeScribe Files" directory
-output_dir = os.path.join(os.getcwd(), "CodeScribe Files")
+output_dir = os.path.join(os.getcwd(), "CodeScribeFiles")
 os.makedirs(output_dir, exist_ok=True)
+
+# Save the generated comments to a file
+output_file = os.path.join(output_dir, "comments.java")
+with open(output_file, "w") as file:
+    file.write(code_scribe_response)
+
+print(f"\nGenerated comments saved to: {output_file}")
