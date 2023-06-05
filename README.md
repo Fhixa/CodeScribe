@@ -24,11 +24,6 @@ CodeScribe is an automated tool that generates beginner-friendly, professional m
    git clone https://github.com/TheZenithCo/CodeScribe.git
    ```
 
-2. Install the required Python dependencies:
-
-   ```
-   pip install -r requirements.txt
-   ```
 
 ### Usage
 
